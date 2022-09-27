@@ -6,6 +6,7 @@ const cors = require('cors');
 const app = express();
 const apiRouter = require('./router/api');
 const userRouter = require('./router/user');
+const upload = require('./router/upload');
 const joi = require('joi');
 // 导入配置文件
 const config = require('./config/config');
@@ -36,12 +37,13 @@ app.use(
     jwt({
         secret: config.jwtSecretKey,
         algorithms: ['HS256'],
-    }).unless({ path: [/^\/api\//, /^\/uploads\//] }),
+    }).unless({ path: [/^\/api\//, /^\/public\//] }),
 );
 
-app.use('/uploads', express.static('./uploads')); //可以通过服务器地址+pubilc+加文件夹访问静态文件
+app.use('/public', express.static('./uploads')); //可以通过服务器地址+pubilc+加文件夹访问静态文件
 app.use('/api', apiRouter);
 app.use('/user', userRouter);
+app.use('/upload', upload);
 //错误中间件
 app.use((err, req, res, next) => {
     // 数据验证失败

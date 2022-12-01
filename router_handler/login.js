@@ -29,11 +29,11 @@ exports.login = (req, res) => {
 
         // 生成 Token 字符串
         const tokenStr = jwt.sign(user, config.jwtSecretKey, {
-            expiresIn: '10h', // token 有效期为 10 个小时
+            expiresIn: '1200s', // token 有效期为 10 个小时
         });
 
         res.send({
-            status: 200,
+            code: 200,
             message: '登录成功！',
             // 为了方便客户端使用 Token，在服务器端直接拼接上 Bearer 的前缀
             token: 'Bearer ' + tokenStr,
@@ -47,12 +47,13 @@ exports.regUser = (req, res) => {
     const userinfo = req.body;
     // 判断数据是否合法
     if (!userinfo.username || !userinfo.password) {
-        return res.send({ status: 1, message: '用户名或密码不能为空！' });
+        return res.send({ code: 400, message: '用户名或密码不能为空！' });
     }
 
     //查询是否存在
     const selectSql = 'select * from users where username=?';
     db.query(selectSql, userinfo.username, (err, result) => {
+        console.log(result);
         if (err) {
             return res.cc(err);
         }
@@ -74,7 +75,7 @@ exports.regUser = (req, res) => {
             }
 
             // 注册成功
-            res.send({ status: 200, message: '注册成功！' });
+            res.send({ code: 200, message: '注册成功！' });
         });
     });
 };

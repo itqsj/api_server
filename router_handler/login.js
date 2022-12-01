@@ -29,7 +29,7 @@ exports.login = (req, res) => {
 
         // 生成 Token 字符串
         const tokenStr = jwt.sign(user, config.jwtSecretKey, {
-            expiresIn: '1200s', // token 有效期为 10 个小时
+            expiresIn: '12h', // token 有效期为 10 个小时
         });
 
         res.send({
@@ -53,7 +53,6 @@ exports.regUser = (req, res) => {
     //查询是否存在
     const selectSql = 'select * from users where username=?';
     db.query(selectSql, userinfo.username, (err, result) => {
-        console.log(result);
         if (err) {
             return res.cc(err);
         }

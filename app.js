@@ -30,6 +30,31 @@ app.use((req, res, next) => {
             msg: err instanceof Error ? err.message : err,
         });
     };
+    res.selectErr = (err, result, msg = '查询失败！') => {
+        if (err) {
+            res.cc(err, 500);
+            return false;
+        }
+        if (result.length !== 1) {
+            res.cc(msg, 400);
+            return false;
+        }
+
+        return true;
+    };
+
+    res.updateErr = (err, result, msg = '更新失败！') => {
+        if (err) {
+            res.cc(err, 500);
+            return false;
+        }
+        if (result.affectedRows !== 1) {
+            res.cc(msg, 400);
+            return false;
+        }
+
+        return true;
+    };
     next();
 });
 

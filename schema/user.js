@@ -24,19 +24,36 @@ const joi = require('joi');
 // .dataUri()：当前字段为可以是URL地址
 // .allow(...values:any[])：该字段允许为指定参数的值
 // .default(any[])：设置该字段的默认值，值可以为string、number、boolean……等
-
+const id = joi.number().required();
 const username = joi.string().alphanum().min(4).max(12).required();
-
 const password = joi
     .string()
     .pattern(/^[\S]{6,12}$/)
     .required();
+const token = joi.string().required();
+// dataUri() 指的是如下格式的字符串数据：
+// data:image/png;base64,VE9PTUFOWVNFQ1JFVFM=
+const avatar = joi.string().required();
 
 // 注册和登录表单的验证规则对象
 exports.reg_login_schema = {
     body: {
         username,
         password,
+    },
+};
+
+// 获取用户信息
+exports.reg_getuser_schema = {
+    body: {
+        username,
+    },
+};
+
+// 效验token
+exports.reg_verify_schema = {
+    body: {
+        token,
     },
 };
 
@@ -51,5 +68,13 @@ exports.update_password_schema = {
         // 2. joi.not(joi.ref('oldPwd')) 表示 newPwd 的值不能等于 oldPwd 的值
         // 3. .concat() 用于合并 joi.not(joi.ref('oldPwd')) 和 password 这两条验证规则
         newPwd: joi.not(joi.ref('oldPwd')).concat(password),
+    },
+};
+
+// 更新头像
+exports.reg_avatar_schema = {
+    body: {
+        id,
+        avatar,
     },
 };

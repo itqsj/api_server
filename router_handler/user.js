@@ -82,3 +82,28 @@ exports.resetpwd = (req, res) => {
         updatePwd(req.body, result[0], res);
     });
 };
+
+//更新头像
+exports.updateAvatar = (req, res) => {
+    const { id, avatar } = req.body;
+    const sql = 'select * from users where id=?';
+    db.query(sql, [id], (err, result) => {
+        const valid = res.selectErr(err, result, `没有id为${id}的用户！`);
+        if (!valid) {
+            return false;
+        }
+        const sql = 'update users set user_pic=? where id=?';
+
+        db.query(sql, [avatar, id], (err, result) => {
+            //执行失败
+            const valid = res.updateErr(err, result, '更新头像失败！');
+            if (!valid) {
+                return false;
+            }
+            res.send({
+                code: 200,
+                msg: '更新成功！',
+            });
+        });
+    });
+};

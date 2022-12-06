@@ -34,6 +34,7 @@ const token = joi.string().required();
 // dataUri() 指的是如下格式的字符串数据：
 // data:image/png;base64,VE9PTUFOWVNFQ1JFVFM=
 const avatar = joi.string().required();
+const background = joi.string().required();
 
 // 注册和登录表单的验证规则对象
 exports.reg_login_schema = {
@@ -76,5 +77,13 @@ exports.reg_avatar_schema = {
     body: {
         id,
         avatar,
+    },
+};
+
+// 更新背景
+exports.reg_bg_schema = {
+    body: {
+        id,
+        background,
     },
 };

@@ -8,6 +8,7 @@ const {
     verifyToken,
     resetpwd,
     updateAvatar,
+    updateBg,
 } = require('../router_handler/user');
 // 校验
 const {
@@ -15,6 +16,7 @@ const {
     reg_getuser_schema,
     reg_verify_schema,
     reg_avatar_schema,
+    reg_bg_schema,
 } = require('../schema/user');
 
 const router = express.Router();
@@ -26,5 +28,7 @@ router.post('/verifyToken', expressJoi(reg_verify_schema), verifyToken);
 router.post('/resetpwd', expressJoi(update_password_schema), resetpwd);
 //修改头像
 router.post('/upAvatar', expressJoi(reg_avatar_schema), updateAvatar);
+//修改背景
+router.post('/bg', expressJoi(reg_bg_schema), updateBg);
 
 module.exports = router;

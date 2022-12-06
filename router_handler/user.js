@@ -107,3 +107,28 @@ exports.updateAvatar = (req, res) => {
         });
     });
 };
+
+//更新背景
+exports.updateBg = (req, res) => {
+    const { id, background } = req.body;
+    const sql = 'select * from users where id=?';
+    db.query(sql, [id], (err, result) => {
+        const valid = res.selectErr(err, result, `没有id为${id}的用户！`);
+        if (!valid) {
+            return false;
+        }
+        const sql = 'update users set background=? where id=?';
+
+        db.query(sql, [background, id], (err, result) => {
+            //执行失败
+            const valid = res.updateErr(err, result, '更新背景失败！');
+            if (!valid) {
+                return false;
+            }
+            res.send({
+                code: 200,
+                msg: '更新成功！',
+            });
+        });
+    });
+};

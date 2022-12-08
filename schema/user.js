@@ -36,6 +36,10 @@ const token = joi.string().required();
 const avatar = joi.string().required();
 const background = joi.string().required();
 
+exports.reg_getuserlist_schema = {
+    body: {},
+};
+
 // 注册和登录表单的验证规则对象
 exports.reg_login_schema = {
     body: {

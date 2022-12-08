@@ -9,6 +9,7 @@ const {
     resetpwd,
     updateAvatar,
     updateBg,
+    getUserList,
 } = require('../router_handler/user');
 // 校验
 const {
@@ -17,10 +18,13 @@ const {
     reg_verify_schema,
     reg_avatar_schema,
     reg_bg_schema,
+    reg_getuserlist_schema,
 } = require('../schema/user');
 
 const router = express.Router();
 
+//获取用户列表
+router.get('/list', expressJoi(reg_getuserlist_schema), getUserList);
 // 获取用户信息
 router.post('/info', expressJoi(reg_getuser_schema), userInfo);
 router.post('/verifyToken', expressJoi(reg_verify_schema), verifyToken);

@@ -7,9 +7,40 @@ const bcrypt = require('bcryptjs');
 // 导入配置文件
 const config = require('../config/config');
 
+exports.getUserList = (req, res) => {
+    let { page = 0, pageSize = 10 } = req.body;
+    if (page !== 0) {
+        page = page - 1;
+    }
+    // 根据分类的状态，获取所有未被删除的分类列表数据
+    // is_delete 为 0 表示没有被 标记为删除 的数据
+    const sql =
+        'select id,username,nickname,email,user_pic,background from users order by id asc LIMIT ? OFFSET ?';
+    db.query(sql, [pageSize, page], (err, results) => {
+        // 1. 执行 SQL 语句失败
+        if (err) return res.cc(err);
+        const selectCount = 'select count (*) from users';
+        db.query(selectCount, [], (err, result) => {
+            // 1. 执行 SQL 语句失败
+            if (err) return res.cc(err);
+            // 2. 执行 SQL 语句成功
+            res.send({
+                status: 200,
+                message: '获取成功！',
+                data: {
+                    count: result[0]['count (*)'],
+                    page: page + 1,
+                    pageSize,
+                    list: results,
+                },
+            });
+        });
+    });
+};
+
 exports.userInfo = (req, res) => {
     const selectSql =
-        'select id,username,nickname,email,user_pic from users where id = ?';
+        'select id,username,nickname,email,user_pic,background from users where id = ?';
     db.query(selectSql, [req.auth.id], (err, result) => {
         if (err) {
             return res.cc(err, 500);

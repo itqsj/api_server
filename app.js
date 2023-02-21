@@ -4,6 +4,9 @@ const express = require('express');
 const cors = require('cors');
 // 创建 express 的服务器实例
 const app = express();
+//引入数据库
+require('./db/index');
+
 const loginRouter = require('./router/login');
 const userRouter = require('./router/user');
 const cateRouter = require('./router/cate');

@@ -26,7 +26,7 @@ const router = express.Router();
 //获取用户列表
 router.get('/list', expressJoi(reg_getuserlist_schema), getUserList);
 // 获取用户信息
-router.post('/info', expressJoi(reg_getuser_schema), userInfo);
+router.get('/info', expressJoi(reg_getuser_schema), userInfo);
 router.post('/verifyToken', expressJoi(reg_verify_schema), verifyToken);
 //重置密码
 router.post('/resetpwd', expressJoi(update_password_schema), resetpwd);

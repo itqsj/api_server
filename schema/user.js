@@ -24,34 +24,54 @@ const joi = require('joi');
 // .dataUri()：当前字段为可以是URL地址
 // .allow(...values:any[])：该字段允许为指定参数的值
 // .default(any[])：设置该字段的默认值，值可以为string、number、boolean……等
-const id = joi.number().required();
+const _id = joi.string().required();
+const page = joi.number();
+const pageSize = joi.number();
 const username = joi.string().alphanum().min(4).max(12).required();
 const password = joi
     .string()
     .pattern(/^[\S]{6,12}$/)
     .required();
+// const email = joi.string().regex('^w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*$');
+const email = joi.string().required();
 const token = joi.string().required();
 // dataUri() 指的是如下格式的字符串数据：
 // data:image/png;base64,VE9PTUFOWVNFQ1JFVFM=
-const avatar = joi.string().required();
+const user_pic = joi.string().required();
 const background = joi.string().required();
+const introduction = joi.string().required();
 
 exports.reg_getuserlist_schema = {
-    body: {},
+    body: {
+        page,
+        pageSize,
+    },
 };
 
 // 注册和登录表单的验证规则对象
 exports.reg_login_schema = {
     body: {
+        email,
+        password,
+    },
+};
+
+//注册
+exports.reg_reguser_schema = {
+    body: {
         username,
         password,
+        email,
+        user_pic,
+        background,
+        introduction,
     },
 };
 
 // 获取用户信息
 exports.reg_getuser_schema = {
     body: {
-        username,
+        _id,
     },
 };
 
@@ -65,7 +85,7 @@ exports.reg_verify_schema = {
 // 重置密码校验
 exports.update_password_schema = {
     body: {
-        username,
+        email,
         oldPwd: password,
         // 使用 joi.not(joi.ref('oldPwd')).concat(password) 规则，验证 req.body.newPwd 的值
         // 解读：
@@ -79,15 +99,15 @@ exports.update_password_schema = {
 // 更新头像
 exports.reg_avatar_schema = {
     body: {
-        id,
-        avatar,
+        _id,
+        user_pic,
     },
 };
 
 // 更新背景
 exports.reg_bg_schema = {
     body: {
-        id,
+        _id,
         background,
     },
 };

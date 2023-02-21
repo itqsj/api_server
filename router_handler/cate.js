@@ -16,7 +16,7 @@ exports.getCateList = (req, res) => {
 
         // 2. 执行 SQL 语句成功
         res.send({
-            status: 200,
+            code: 200,
             message: '获取成功！',
             data: results,
         });

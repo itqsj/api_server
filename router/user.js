@@ -4,7 +4,7 @@ const expressJoi = require('@escook/express-joi');
 
 //user函数
 const {
-    userInfo,
+    getUserInfo,
     verifyToken,
     resetpwd,
     updateAvatar,
@@ -14,7 +14,6 @@ const {
 // 校验
 const {
     update_password_schema,
-    reg_getuser_schema,
     reg_verify_schema,
     reg_avatar_schema,
     reg_bg_schema,
@@ -26,7 +25,7 @@ const router = express.Router();
 //获取用户列表
 router.get('/list', expressJoi(reg_getuserlist_schema), getUserList);
 // 获取用户信息
-router.get('/info', expressJoi(reg_getuser_schema), userInfo);
+router.get('/info', getUserInfo);
 router.post('/verifyToken', expressJoi(reg_verify_schema), verifyToken);
 //重置密码
 router.post('/resetpwd', expressJoi(update_password_schema), resetpwd);

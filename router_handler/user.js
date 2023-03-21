@@ -7,6 +7,7 @@ const config = require('../config/config');
 
 const APIFeatures = require('../util/APIFeatures');
 const UserModel = require('../db/user');
+const UserTeamModel = require('../db/userTeam');
 
 exports.getUserList = async (req, res) => {
     const { page = 1, pageSize = 10 } = req.query;
@@ -28,13 +29,19 @@ exports.getUserList = async (req, res) => {
     });
 };
 
-exports.userInfo = async (req, res) => {
-    const id = req.body._id;
-    const info = await UserModel.findById(id);
+exports.getUserInfo = async (req, res) => {
+    const { _id } = req.auth;
+    const info = await UserModel.findOne({ _id });
+    const team = await UserTeamModel.findOne({
+        users: { $elemMatch: { $eq: `${_id}` } },
+    });
 
     res.send({
         code: 200,
-        data: info,
+        data: {
+            ...info._doc,
+            team,
+        },
     });
 };
 

@@ -12,6 +12,6 @@ const {
 const { getArticleList, addArticle } = require('../router_handler/article');
 
 router.get('/list', expressJoi(reg_articlelist_schema), getArticleList);
-router.get('/add', expressJoi(reg_articleadd_schema), addArticle);
+router.post('/add', expressJoi(reg_articleadd_schema), addArticle);
 
 module.exports = router;

@@ -68,13 +68,6 @@ exports.reg_reguser_schema = {
     },
 };
 
-// 获取用户信息
-exports.reg_getuser_schema = {
-    body: {
-        _id,
-    },
-};
-
 // 效验token
 exports.reg_verify_schema = {
     body: {

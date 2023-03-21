@@ -9,7 +9,7 @@ const config = require('../config/config');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-    // _id: Schema.Types.ObjectId,
+    _id: Schema.Types.ObjectId,
     username: {
         minlength: 3,
         type: String,
@@ -61,18 +61,16 @@ UserSchema.methods.validatePassword = async function (
     return await bcrypt.compareSync(inputPassword, userPassword);
 };
 
-UserSchema.methods.generateToken = function () {
-    const token = jwt.sign(
-        {
-            _id: this._id,
-            username: this.username,
-            email: this.email,
-        },
-        config.jwtSecretKey,
-        {
-            expiresIn: '10h',
-        },
-    );
+UserSchema.methods.generateToken = function (team_id) {
+    const obj = {
+        _id: this._id,
+        username: this.username,
+        email: this.email,
+        team_id,
+    };
+    const token = jwt.sign(obj, config.jwtSecretKey, {
+        expiresIn: '10h',
+    });
 
     return token;
 };

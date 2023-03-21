@@ -24,28 +24,48 @@ const joi = require('joi');
 // .dataUri()：当前字段为可以是URL地址
 // .allow(...values:any[])：该字段允许为指定参数的值
 // .default(any[])：设置该字段的默认值，值可以为string、number、boolean……等
-const id = joi.number().required();
+
+// task
 const name = joi.string().required();
-const alias = joi.string().required();
-const parent_id = joi.string();
+const _id = joi.string().required(); //上一层id
+const img = joi.string().allow('');
+const schedule = joi.number().min(0).max(1).required(); //任务进度（百分比）
+const startTime = joi.date().allow(''); //任务开始时间
+const completeTime = joi.date().required();
+const planCompleteTime = joi.date().allow('');
+const sort = joi.number().required();
+const priority = joi.number().valid(1, 2, 3).required(); //优先级
 
-// 注册和登录表单的验证规则对象
-exports.reg_catelist_schema = {
+exports.reg_taskadd_schema = {
     body: {
-        // id,
-    },
-};
-
-exports.reg_cateadd_schema = {
-    body: {
-        parent_id,
         name,
-        alias,
+        panel_id: _id,
+        img,
+        schedule,
+        startTime,
+        completeTime,
+        planCompleteTime,
+        sort,
+        priority,
     },
 };
 
-exports.reg_catedel_schema = {
+// taskPanel
+const taskPanelName = joi.string().required();
+const team_id = joi.string().required(); //上一层id
+const sortPanel = joi.number().required();
+
+exports.reg_taskPaneladd_schema = {
     body: {
-        id,
+        name: taskPanelName,
+        team_id,
+    },
+};
+
+exports.reg_taskPanelmove_schema = {
+    body: {
+        _id,
+        team_id,
+        sort: sortPanel,
     },
 };

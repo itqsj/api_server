@@ -1,70 +1,87 @@
 const db = require('../db/index');
+const CateModel = require('../db/cate');
+const APIFeatures = require('../util/APIFeatures');
 
-//更新头像
-exports.getCateList = (req, res) => {
-    let { page = 0, pageSize = 10 } = req.body;
-    if (page !== 0) {
-        page = page - 1;
-    }
-    // 根据分类的状态，获取所有未被删除的分类列表数据
-    // is_delete 为 0 表示没有被 标记为删除 的数据
-    const sql =
-        'select * from article_cate where is_delete=0 order by id asc LIMIT ? OFFSET ?';
-    db.query(sql, [pageSize, page], (err, results) => {
-        // 1. 执行 SQL 语句失败
-        if (err) return res.cc(err);
+exports.getCateList = async (req, res) => {
+    let { page = 1, pageSize = 10 } = req.query;
 
-        // 2. 执行 SQL 语句成功
-        res.send({
-            code: 200,
-            message: '获取成功！',
-            data: results,
-        });
+    const features = new APIFeatures(CateModel.find(), req.query)
+        .paginate()
+        .sort();
+
+    const cateList = await features.query;
+    const count = await CateModel.count();
+
+    // 2. 执行 SQL 语句成功
+    res.send({
+        code: 200,
+        message: '获取成功！',
+        data: {
+            count,
+            page: page - 0,
+            pageSize: pageSize - 0,
+            list: cateList,
+        },
     });
 };
 
-function cateInsert(req, res, isChild = false) {
-    const sql = `insert into article_cate set ?`;
-    db.query(sql, req.body, (err, result) => {
-        // SQL 语句执行失败
-        if (err) return res.cc(err);
-        // SQL 语句执行成功，但是影响行数不等于 1
-        if (result.affectedRows !== 1) return res.cc('新增文章分类失败！');
-        if (isChild) {
-            const sql = `update article_cate set has_child=1 where id=?`;
-            db.query(sql, req.body.parent_id, (err, result) => {
-                // SQL 语句执行失败
-                if (err) return res.cc(err);
+function cateInsert(req, res) {
+    CateModel.insertMany(req).then(
+        () => {
+            res.send({
+                code: 200,
+                message: '操作成功！',
             });
-        }
-        // 新增文章分类成功
-        res.cc({
-            code: 200,
-            msg: '新增分类成功！',
-        });
-    });
+        },
+        (err) => {
+            res.send({
+                code: 301,
+                message: err,
+            });
+        },
+    );
 }
 // 新增
-exports.cateAdd = (req, res) => {
-    const { name, alias, parent_id = 99 } = req.body;
-    const sql = 'select * from article_cate where (name=? or alias=?)';
-    db.query(sql, [name, alias], (err, result) => {
-        if (err) return res.cc(err, 500);
-        if (result.length) return res.cc('该分类名称或alias已存在！');
-        if (parent_id !== 99) {
-            const sql = 'select * from article_cate where id=?';
-            db.query(sql, [parent_id], (err, result) => {
-                if (err) return res.cc(err, 500);
-                if (!result.length) return res.cc('该父分类不存在！');
-                req.body.level = result[0].level + 1;
-                const isChild = true;
-                cateInsert(req, res, isChild);
-            });
-        } else {
-            req.body.parent_id = 99;
-            cateInsert(req, res);
-        }
+exports.cateAdd = async (req, res) => {
+    const { name, alias, parent_id = '99' } = req.body;
+    let level = 1;
+
+    const cate = await CateModel.findOne({
+        $or: [{ name }, { alias }],
     });
+
+    if (cate) return res.cc('该分类名称或alias已存在！');
+
+    if (parent_id !== '99') {
+        CateModel.findOne({ _id: parent_id }).then(
+            (cate) => {
+                console.log(cate);
+                level = cate.level + 1;
+                cateInsert(
+                    {
+                        name,
+                        alias,
+                        parent_id,
+                        level,
+                    },
+                    res,
+                );
+            },
+            (err) => {
+                return res.cc(err);
+            },
+        );
+    } else {
+        cateInsert(
+            {
+                name,
+                alias,
+                parent_id,
+                level,
+            },
+            res,
+        );
+    }
 };
 
 // 删除

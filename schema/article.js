@@ -24,14 +24,14 @@ const joi = require('joi');
 // .dataUri()：当前字段为可以是URL地址
 // .allow(...values:any[])：该字段允许为指定参数的值
 // .default(any[])：设置该字段的默认值，值可以为string、number、boolean……等
-const id = joi.number().required();
+const id = joi.string().required();
 const title = joi.string().required();
-const cate_id = joi.number().integer().min(1).required();
+const cate_id = joi.string().required();
 const content = joi.string().required().allow('');
-const state = joi.string().valid('已发布', '草稿').required();
-const cover_img = joi.string().required();
+const state = joi.string().valid('1', '2', '3').required(); //1 已上线, 2 '草稿' 3已下线
+const cover_img = joi.array().required();
+const tags = joi.array().required();
 
-// 注册和登录表单的验证规则对象
 exports.reg_articlelist_schema = {
     body: {},
 };
@@ -43,5 +43,6 @@ exports.reg_articleadd_schema = {
         content,
         state,
         cover_img,
+        tags,
     },
 };

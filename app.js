@@ -9,8 +9,10 @@ require('./db/index');
 
 const loginRouter = require('./router/login');
 const userRouter = require('./router/user');
+const teamRouter = require('./router/userTeam');
 const cateRouter = require('./router/cate');
 const articleRouter = require('./router/article');
+const taskRouter = require('./router/task');
 const upload = require('./router/upload');
 const joi = require('joi');
 // 导入配置文件
@@ -73,8 +75,10 @@ app.use(
 app.use('/public', express.static('./uploads')); //可以通过服务器地址+pubilc+加文件夹访问静态文件
 app.use('/lg', loginRouter);
 app.use('/user', userRouter);
+app.use('/team', teamRouter);
 app.use('/cate', cateRouter);
 app.use('/article', articleRouter);
+app.use('/task', taskRouter);
 app.use('/upload', upload); //上传图片文件等
 //错误中间件
 app.use((err, req, res, next) => {

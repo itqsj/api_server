@@ -1,6 +1,9 @@
 // const path = require('path');
 const UserModel = require('../db/user');
+const UserTeamModel = require('../db/userTeam');
 const bcryptjs = require('bcryptjs');
+
+const { awaitFn } = require('../util/awaitFn');
 
 exports.login = async (req, res) => {
     //获取定位
@@ -31,11 +34,21 @@ exports.login = async (req, res) => {
 
     if (!compareResult) res.cc('密码错误！请重试', 400);
 
-    const token = 'Bearer ' + result.generateToken();
+    const team = await awaitFn(
+        UserTeamModel.findOne({
+            users: { $elemMatch: { $eq: `${result._id}` } },
+        }),
+    );
+
+    const token = 'Bearer ' + result.generateToken(team.res._id);
+    delete result._doc.password;
     res.send({
         code: 200,
         msg: '登录成功！',
-        token: token,
+        data: {
+            token: token,
+            ...result._doc,
+        },
     });
 };
 

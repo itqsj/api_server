@@ -24,28 +24,13 @@ const joi = require('joi');
 // .dataUri()：当前字段为可以是URL地址
 // .allow(...values:any[])：该字段允许为指定参数的值
 // .default(any[])：设置该字段的默认值，值可以为string、number、boolean……等
-const id = joi.number().required();
 const name = joi.string().required();
-const alias = joi.string().required();
-const parent_id = joi.string();
+const users = joi.array().min(1).required();
 
 // 注册和登录表单的验证规则对象
-exports.reg_catelist_schema = {
+exports.reg_teamadd_schema = {
     body: {
-        // id,
-    },
-};
-
-exports.reg_cateadd_schema = {
-    body: {
-        parent_id,
         name,
-        alias,
-    },
-};
-
-exports.reg_catedel_schema = {
-    body: {
-        id,
+        users,
     },
 };

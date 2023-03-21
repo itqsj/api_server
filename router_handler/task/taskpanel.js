@@ -1,6 +1,5 @@
-const APIFeatures = require('../util/APIFeatures');
-const { TaskPanelsModel, TaskModel } = require('../db/task');
-const { awaitFn } = require('../util/awaitFn');
+const { TaskPanelsModel } = require('../../db/task');
+const { awaitFn } = require('../../util/awaitFn');
 
 // 面板列表
 exports.getPanelList = async (req, res) => {
@@ -126,14 +125,13 @@ exports.panelMove = async (req, res) => {
 
 // 面板删除
 exports.panelDel = async (req, res) => {
-    const { team_id: my_team } = req.auth;
-    let { _id, team_id } = req.body;
-};
+    const { team_id } = req.auth;
+    let { _id } = req.body;
 
-exports.taskAdd = async (req, res) => {
-    // 2. 执行 SQL 语句成功
-    res.send({
-        code: 200,
-        message: '获取成功！',
-    });
+    const result = await awaitFn(TaskPanelsModel.findOne({ _id, team_id }));
+    if (result.success) {
+        res.send({ result });
+    } else {
+        res.cc('没找到当前任务面板');
+    }
 };

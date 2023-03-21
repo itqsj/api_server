@@ -5,6 +5,12 @@ const Schema = mongoose.Schema;
 
 const TaskPanelsSchema = new Schema({
     _id: Schema.Types.ObjectId,
+    type: {
+        //面板类型
+        //1 待执行 2.进行中 3已完成 4需复习
+        type: Number,
+        require: [true, 'type不能为空'],
+    },
     team_id: {
         type: Schema.ObjectId,
         required: [true, 'team_id不能为空'],
@@ -35,11 +41,6 @@ const TaskSchema = new Schema({
         type: String,
         required: false,
     },
-    schedule: {
-        type: Number,
-        required: false,
-        default: 0,
-    },
     startTime: {
         type: Date,
         required: false,
@@ -50,7 +51,7 @@ const TaskSchema = new Schema({
     },
     planCompleteTime: {
         type: Date,
-        required: [true, 'planCompleteTime不能为空'],
+        required: [false],
     },
     sort: {
         type: Number,

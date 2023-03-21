@@ -29,7 +29,7 @@ const joi = require('joi');
 const name = joi.string().required();
 const _id = joi.string().required(); //上一层id
 const img = joi.string().allow('');
-const schedule = joi.number().min(0).max(1).required(); //任务进度（百分比）
+// const schedule = joi.number().min(0).max(1).required(); //任务进度（百分比）
 const startTime = joi.date().allow(''); //任务开始时间
 const completeTime = joi.date().required();
 const planCompleteTime = joi.date().allow('');
@@ -41,7 +41,6 @@ exports.reg_taskadd_schema = {
         name,
         panel_id: _id,
         img,
-        schedule,
         startTime,
         completeTime,
         planCompleteTime,
@@ -54,9 +53,11 @@ exports.reg_taskadd_schema = {
 const taskPanelName = joi.string().required();
 const team_id = joi.string().required(); //上一层id
 const sortPanel = joi.number().required();
+const type = joi.number().valid(1, 2, 3, 4).required();
 
 exports.reg_taskPaneladd_schema = {
     body: {
+        type, //1 待执行 2.进行中 3已完成 4需复习
         name: taskPanelName,
         team_id,
     },
@@ -67,5 +68,11 @@ exports.reg_taskPanelmove_schema = {
         _id,
         team_id,
         sort: sortPanel,
+    },
+};
+
+exports.reg_taskPaneldel_schema = {
+    body: {
+        _id,
     },
 };

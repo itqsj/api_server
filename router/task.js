@@ -24,6 +24,6 @@ router.post('/panel_add', expressJoi(reg_taskPaneladd_schema), panelAdd);
 router.post('/panel_move', expressJoi(reg_taskPanelmove_schema), panelMove);
 router.post('/panel_del', expressJoi(reg_taskPaneldel_schema), panelDel);
 
-router.post('/task_add', expressJoi(reg_taskadd_schema), taskAdd);
+router.post('/add', expressJoi(reg_taskadd_schema), taskAdd);
 
 module.exports = router;

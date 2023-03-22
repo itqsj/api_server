@@ -9,7 +9,7 @@ const TaskPanelsSchema = new Schema({
         //面板类型
         //1 待执行 2.进行中 3已完成 4需复习
         type: Number,
-        require: [true, 'type不能为空'],
+        required: [true, 'type不能为空'],
     },
     team_id: {
         type: Schema.ObjectId,

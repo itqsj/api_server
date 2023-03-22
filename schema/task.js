@@ -31,9 +31,9 @@ const _id = joi.string().required(); //上一层id
 const img = joi.string().allow('');
 // const schedule = joi.number().min(0).max(1).required(); //任务进度（百分比）
 const startTime = joi.date().allow(''); //任务开始时间
-const completeTime = joi.date().required();
+const completeTime = joi.date().allow('');
 const planCompleteTime = joi.date().allow('');
-const sort = joi.number().required();
+const content = joi.string().allow('');
 const priority = joi.number().valid(1, 2, 3).required(); //优先级
 
 exports.reg_taskadd_schema = {
@@ -44,8 +44,8 @@ exports.reg_taskadd_schema = {
         startTime,
         completeTime,
         planCompleteTime,
-        sort,
         priority,
+        content,
     },
 };
 

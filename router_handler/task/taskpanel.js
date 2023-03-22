@@ -32,9 +32,11 @@ exports.getPanelList = async (req, res) => {
 
 // 添加面板
 exports.panelAdd = async (req, res) => {
-    const { name, team_id } = req.body;
+    const { name, team_id, type } = req.body;
     const result = await TaskPanelsModel.find({ team_id });
-    const isHas = result.filter((item) => item.name === name).length;
+    const isHas = result.filter(
+        (item) => item.name === name || item.type === type,
+    ).length;
 
     if (isHas) {
         return res.cc('当前名字的面板已存在！');
@@ -44,6 +46,7 @@ exports.panelAdd = async (req, res) => {
         TaskPanelsModel.insertMany({
             name,
             team_id,
+            type,
             sort: result.length + 1,
         }),
     );
@@ -101,26 +104,39 @@ exports.panelMove = async (req, res) => {
         return;
     }
     if (isRise) {
-        updataList = list.filter(
-            (item, index) => NEW_INDEX <= index && index <= OLD_INDEX,
-        );
+        list.forEach((item, index) => {
+            if (NEW_INDEX <= index && index <= OLD_INDEX) {
+                updataList.push({
+                    updateMany: {
+                        filter: { _id: item._id },
+                        update: { sort: item.sort },
+                    },
+                });
+            }
+        });
     } else {
-        updataList = list.filter(
-            (item, index) => OLD_INDEX <= index && index <= NEW_INDEX,
-        );
+        list.forEach((item, index) => {
+            if (OLD_INDEX <= index && index <= NEW_INDEX) {
+                updataList.push({
+                    updateMany: {
+                        filter: { _id: item._id },
+                        update: { sort: item.sort },
+                    },
+                });
+            }
+        });
     }
+    const result = await awaitFn(TaskPanelsModel.bulkWrite(updataList));
 
-    for (let i of updataList) {
-        await awaitFn(
-            TaskPanelsModel.updateOne({ _id: i._id }, { sort: i.sort }),
-        );
+    if (result.success) {
+        // 2. 执行 SQL 语句成功
+        res.send({
+            code: 200,
+            message: '操作成功！',
+        });
+    } else {
+        res.cc('更新失败');
     }
-
-    // 2. 执行 SQL 语句成功
-    res.send({
-        code: 200,
-        message: '操作成功！',
-    });
 };
 
 // 面板删除
@@ -128,9 +144,13 @@ exports.panelDel = async (req, res) => {
     const { team_id } = req.auth;
     let { _id } = req.body;
 
-    const result = await awaitFn(TaskPanelsModel.findOne({ _id, team_id }));
-    if (result.success) {
-        res.send({ result });
+    const result = await awaitFn(TaskPanelsModel.remove({ _id, team_id }));
+    if (result.success && result.res.deletedCount > 0) {
+        res.send({
+            code: 200,
+            message: '操作成功！',
+            result,
+        });
     } else {
         res.cc('没找到当前任务面板');
     }

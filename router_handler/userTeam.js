@@ -14,7 +14,7 @@ exports.addTeam = async (req, res) => {
     }
     const newUsers = Array.from(new Set(users));
     await UserTeamModel.insertMany({ name, users: newUsers })
-        .then((_) => {
+        .then(() => {
             res.send({
                 code: 200,
                 message: '操作成功！',

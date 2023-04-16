@@ -8,10 +8,21 @@ const expressJoi = require('@escook/express-joi');
 const {
     reg_articlelist_schema,
     reg_articleadd_schema,
+    reg_articleedit_schema,
+    reg_articledel_schema,
 } = require('../schema/article');
-const { getArticleList, addArticle } = require('../router_handler/article');
+const {
+    getArticleList,
+    addArticle,
+    articleEdit,
+    getArticleDetail,
+    articleDel,
+} = require('../router_handler/article');
 
 router.get('/list', expressJoi(reg_articlelist_schema), getArticleList);
+router.get('/detail', getArticleDetail);
 router.post('/add', expressJoi(reg_articleadd_schema), addArticle);
+router.post('/edit', expressJoi(reg_articleedit_schema), articleEdit);
+router.post('/del', expressJoi(reg_articledel_schema), articleDel);
 
 module.exports = router;

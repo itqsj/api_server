@@ -83,7 +83,7 @@ exports.resetpwd = async (req, res) => {
     if (!compareResult) return res.cc('密码错误！');
 
     resetUser.password = req.body.newPwd;
-    resetUser.save();
+    await resetUser.save();
 
     res.send({
         code: 200,

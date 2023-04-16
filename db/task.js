@@ -24,6 +24,16 @@ const TaskPanelsSchema = new Schema({
         type: Number,
         required: [true, '标题不能为空'],
     },
+    creator: {
+        type: Schema.ObjectId,
+        ref: 'user',
+        required: [true, 'user不能为空'],
+    },
+    creator_at: {
+        type: Number,
+        default: Date.now(),
+        required: [true, 'user不能为空'],
+    },
 });
 
 const TaskSchema = new Schema({
@@ -32,6 +42,11 @@ const TaskSchema = new Schema({
         type: Schema.ObjectId,
         required: [true, 'panel_id不能为空'],
         ref: 'taskPanels',
+    },
+    team_id: {
+        type: Schema.ObjectId,
+        required: [true, 'team_id不能为空'],
+        ref: 'userTeam',
     },
     name: {
         type: String,
@@ -42,16 +57,20 @@ const TaskSchema = new Schema({
         required: false,
     },
     startTime: {
-        type: Date,
-        required: false,
+        type: Number,
+        required: [false, 'startTime不能为空'],
     },
     completeTime: {
-        type: Date,
+        type: Number,
         required: [false],
     },
-    planCompleteTime: {
-        type: Date,
-        required: [false],
+    needTime: {
+        type: Number,
+        required: [true, 'needTime不能为空'],
+    },
+    content: {
+        type: String,
+        required: [true, 'content不能为空'],
     },
     sort: {
         type: Number,
@@ -60,6 +79,16 @@ const TaskSchema = new Schema({
     priority: {
         type: Number, //1高，2较高，3低
         required: [true, 'priority不能为空'],
+    },
+    creator: {
+        type: Schema.ObjectId,
+        ref: 'user',
+        required: [true, 'user不能为空'],
+    },
+    creator_at: {
+        type: Number,
+        default: Date.now(),
+        required: [true, 'user不能为空'],
     },
 });
 

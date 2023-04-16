@@ -91,6 +91,15 @@ app.use((err, req, res, next) => {
     res.cc(err);
 });
 
+// 接收全局错误
+process.on('uncaughtException', (error) => {
+    console.error('uncaughtException:', error);
+});
+
+process.on('unhandledRejection', (reason) => {
+    console.error('unhandledRejection:', reason);
+});
+
 // 调用 app.listen 方法，指定端口号并启动web服务器
 app.listen(3007, function () {
     console.log('api server running at http://127.0.0.1:3007');

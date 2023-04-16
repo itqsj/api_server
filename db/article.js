@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const validate = require('validator');
+// const validate = require('validator');
 
 const Schema = mongoose.Schema;
 
@@ -18,6 +18,10 @@ const ArticleSchema = new Schema({
         type: String,
         required: [true, '内容不能为空'],
     },
+    introduce: {
+        type: String,
+        required: [true, '介绍不能为空'],
+    },
     state: {
         type: String,
         required: [true, '状态不能为空'],
@@ -25,11 +29,11 @@ const ArticleSchema = new Schema({
     },
     cover_img: {
         type: Array,
-        required: [true, '图片不能为空'],
+        required: [false, '图片不能为空'],
     },
     tags: {
         type: Array,
-        required: [true, 'tag不能为空'],
+        required: [false, 'tag不能为空'],
     },
     pub_time: {
         type: Number,

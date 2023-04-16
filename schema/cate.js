@@ -26,10 +26,8 @@ const joi = require('joi');
 // .default(any[])：设置该字段的默认值，值可以为string、number、boolean……等
 const id = joi.number().required();
 const name = joi.string().required();
-const alias = joi.string().required();
 const parent_id = joi.string();
 
-// 注册和登录表单的验证规则对象
 exports.reg_catelist_schema = {
     body: {
         // id,
@@ -40,7 +38,6 @@ exports.reg_cateadd_schema = {
     body: {
         parent_id,
         name,
-        alias,
     },
 };
 

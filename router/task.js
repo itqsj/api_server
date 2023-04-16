@@ -9,7 +9,9 @@ const {
     reg_taskadd_schema,
     reg_taskPaneladd_schema,
     reg_taskPanelmove_schema,
-    reg_taskPaneldel_schema,
+    reg_taskdel_schema,
+    reg_taskamove_schema,
+    reg_taskedit_schema,
 } = require('../schema/task');
 const {
     getPanelList,
@@ -17,13 +19,25 @@ const {
     panelMove,
     panelDel,
 } = require('../router_handler/task/taskpanel');
-const { taskAdd } = require('../router_handler/task/task');
+const {
+    taskAdd,
+    taskList,
+    taskDel,
+    taskMove,
+    taskDetail,
+    taskEdit,
+} = require('../router_handler/task/task');
 
 router.post('/panel_list', getPanelList);
 router.post('/panel_add', expressJoi(reg_taskPaneladd_schema), panelAdd);
 router.post('/panel_move', expressJoi(reg_taskPanelmove_schema), panelMove);
-router.post('/panel_del', expressJoi(reg_taskPaneldel_schema), panelDel);
+router.post('/panel_del', expressJoi(reg_taskdel_schema), panelDel);
 
+router.post('/detail', expressJoi(reg_taskdel_schema), taskDetail);
 router.post('/add', expressJoi(reg_taskadd_schema), taskAdd);
+router.post('/edit', expressJoi(reg_taskedit_schema), taskEdit);
+router.post('/list', taskList);
+router.post('/del', expressJoi(reg_taskdel_schema), taskDel);
+router.post('/move', expressJoi(reg_taskamove_schema), taskMove);
 
 module.exports = router;

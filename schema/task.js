@@ -30,30 +30,52 @@ const name = joi.string().required();
 const _id = joi.string().required(); //上一层id
 const img = joi.string().allow('');
 // const schedule = joi.number().min(0).max(1).required(); //任务进度（百分比）
-const startTime = joi.date().allow(''); //任务开始时间
-const completeTime = joi.date().allow('');
-const planCompleteTime = joi.date().allow('');
+const needTime = joi.number().allow('');
 const content = joi.string().allow('');
 const priority = joi.number().valid(1, 2, 3).required(); //优先级
+const moveType = joi.number().valid(1, 2).required(); //移动类型
+
+const taskPanelName = joi.string().required();
+const team_id = joi.string().required(); //上一层id
+const sortPanel = joi.number().required();
+const type = joi.number().valid(1, 2, 3, 4).required();
 
 exports.reg_taskadd_schema = {
     body: {
         name,
-        panel_id: _id,
         img,
-        startTime,
-        completeTime,
-        planCompleteTime,
+        needTime,
         priority,
         content,
     },
 };
 
-// taskPanel
-const taskPanelName = joi.string().required();
-const team_id = joi.string().required(); //上一层id
-const sortPanel = joi.number().required();
-const type = joi.number().valid(1, 2, 3, 4).required();
+exports.reg_taskedit_schema = {
+    _id,
+    name,
+    img,
+    needTime,
+    priority,
+    content,
+};
+
+exports.reg_taskamove_schema = {
+    body: {
+        team_id,
+        type: moveType,
+        data: joi
+            .string()
+            .custom((value, helpers) => {
+                try {
+                    const newValue = JSON.parse(value);
+                    return newValue;
+                } catch (err) {
+                    return helpers.error('any.invalid');
+                }
+            }, 'custom validation for JSON string')
+            .required(),
+    },
+};
 
 exports.reg_taskPaneladd_schema = {
     body: {
@@ -71,7 +93,7 @@ exports.reg_taskPanelmove_schema = {
     },
 };
 
-exports.reg_taskPaneldel_schema = {
+exports.reg_taskdel_schema = {
     body: {
         _id,
     },

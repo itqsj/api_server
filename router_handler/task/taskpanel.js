@@ -1,10 +1,12 @@
-const { TaskPanelsModel } = require('../../db/task');
+const { TaskPanelsModel, TaskModel } = require('../../db/task');
 const { awaitFn } = require('../../util/awaitFn');
+const { move } = require('./moveFn');
 
 // 面板列表
 exports.getPanelList = async (req, res) => {
     const { team_id } = req.auth;
     let { page = 1, pageSize = 10 } = req.body;
+    let list = [];
 
     if (!team_id) {
         return res.cc('team_id不能为空');
@@ -16,6 +18,17 @@ exports.getPanelList = async (req, res) => {
         .skip(skip)
         .limit(pageSize)
         .sort({ sort: 1 });
+    for (let item in panelList) {
+        list[item] = { ...panelList[item]._doc, tasks: [] };
+        list[item].tasks = await TaskModel.find(
+            {
+                panel_id: panelList[item]._id,
+            },
+            {
+                content: 0,
+            },
+        ).sort({ sort: 1 });
+    }
 
     // 2. 执行 SQL 语句成功
     res.send({
@@ -25,7 +38,7 @@ exports.getPanelList = async (req, res) => {
             count,
             page: page - 0,
             pageSize: pageSize - 0,
-            list: panelList,
+            list: list,
         },
     });
 };
@@ -67,67 +80,21 @@ exports.panelMove = async (req, res) => {
     const { team_id: my_team } = req.auth;
     let updataList = [];
     let { _id, team_id, sort } = req.body;
-    let NEW_INDEX = -1;
-    let OLD_INDEX = -1;
-    let isRise = true;
-    sort = sort + 1;
 
     if (my_team !== team_id) {
         return res.cc('你不是属于当前团队成员，不能移动面板');
     }
     const list = await TaskPanelsModel.find({ team_id }).sort({ sort: 1 });
+    updataList = move({ list, _id, sort });
 
-    if (sort > list.length) {
-        sort = list.length;
-    } else if (sort < 1) {
-        sort = 1;
-    }
-    list.forEach((item, index) => {
-        if (item._id.toString() === _id) {
-            OLD_INDEX = index;
-            isRise = item.sort > sort;
-            item.sort = isRise ? sort - 0.5 : sort + 0.5;
-        }
-    });
-    list.sort((a, b) => a.sort - b.sort);
-    list.forEach((item, index) => {
-        if (item._id.toString() === _id) {
-            NEW_INDEX = index;
-        }
-        item.sort = index + 1;
-    });
-    if (NEW_INDEX === OLD_INDEX) {
+    if (!updataList.length) {
         res.send({
             code: 200,
             message: '操作成功！',
         });
         return;
     }
-    if (isRise) {
-        list.forEach((item, index) => {
-            if (NEW_INDEX <= index && index <= OLD_INDEX) {
-                updataList.push({
-                    updateMany: {
-                        filter: { _id: item._id },
-                        update: { sort: item.sort },
-                    },
-                });
-            }
-        });
-    } else {
-        list.forEach((item, index) => {
-            if (OLD_INDEX <= index && index <= NEW_INDEX) {
-                updataList.push({
-                    updateMany: {
-                        filter: { _id: item._id },
-                        update: { sort: item.sort },
-                    },
-                });
-            }
-        });
-    }
     const result = await awaitFn(TaskPanelsModel.bulkWrite(updataList));
-
     if (result.success) {
         // 2. 执行 SQL 语句成功
         res.send({
@@ -144,7 +111,7 @@ exports.panelDel = async (req, res) => {
     const { team_id } = req.auth;
     let { _id } = req.body;
 
-    const result = await awaitFn(TaskPanelsModel.remove({ _id, team_id }));
+    const result = await awaitFn(TaskPanelsModel.deleteOne({ _id, team_id }));
     if (result.success && result.res.deletedCount > 0) {
         res.send({
             code: 200,

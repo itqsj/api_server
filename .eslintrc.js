@@ -13,6 +13,11 @@ module.exports = {
     rules: {
         'prettier/prettier': 'error',
     },
+    globals: {
+        Atomics: 'readonly',
+        SharedArrayBuffer: 'readonly',
+        process: true,
+    },
     // "rules": {
     // 	"indent": [
     // 		"error",

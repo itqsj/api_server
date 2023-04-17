@@ -183,15 +183,35 @@ exports.taskMove = async (req, res) => {
                 },
             },
         };
-        const addPanel = await TaskPanelsModel.findById(data.added.panel_id);
+        const panels = await TaskPanelsModel.find({
+            _id: { $in: [data.added.panel_id, data.removed.panel_id] },
+        });
+        let addPanel = null;
+        let removePanel = null;
+        panels.forEach((item) => {
+            if (item._id.toString() === data.added.panel_id) {
+                addPanel = item;
+            } else if (item._id.toString() === data.removed.panel_id) {
+                removePanel = item;
+            }
+        });
         const oldTask = removeTarlist.filter(
             (item) => item._id === removeObj.oldTask._id,
         )[0];
 
+        //1 待执行 2.进行中 3已完成 4需复习
         if (addPanel.type === 3) {
             tarTask.updateMany.update.completeTime = Date.now();
-        } else if (addPanel.type === 2 && !oldTask.startTime) {
-            tarTask.updateMany.update.startTime = Date.now();
+        } else if (addPanel.type === 2) {
+            oldTask.usageTime.push([Date.now()]);
+            tarTask.updateMany.update.usageTime = oldTask.usageTime;
+        }
+        if (removePanel.type === 2) {
+            const index = (oldTask.usageTime.length || 1) - 1;
+            if (oldTask.usageTime[index]) {
+                oldTask.usageTime[index].push(Date.now());
+                tarTask.updateMany.update.usageTime = oldTask.usageTime;
+            }
         }
 
         updataList = [...removeObj.newList, ...addChangeList, tarTask];

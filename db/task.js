@@ -56,16 +56,17 @@ const TaskSchema = new Schema({
         type: String,
         required: false,
     },
-    startTime: {
-        type: Number,
-        required: [false, 'startTime不能为空'],
-    },
     completeTime: {
         type: Number,
         required: [false],
     },
     needTime: {
         type: Number,
+        required: [true, 'needTime不能为空'],
+    },
+    usageTime: {
+        type: [[Number]],
+        default: [],
         required: [true, 'needTime不能为空'],
     },
     content: {

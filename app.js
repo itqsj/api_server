@@ -4,9 +4,6 @@ const express = require('express');
 const cors = require('cors');
 // 创建 express 的服务器实例
 const app = express();
-//引入数据库
-require('./db/index');
-
 const loginRouter = require('./router/login');
 const userRouter = require('./router/user');
 const teamRouter = require('./router/userTeam');
@@ -15,17 +12,20 @@ const articleRouter = require('./router/article');
 const taskRouter = require('./router/task');
 const upload = require('./router/upload');
 const joi = require('joi');
+const dotenv = require('dotenv');
 // 导入配置文件
 const config = require('./config/config');
+
+dotenv.config({
+    path: './.env',
+});
+
 //解析token的中间件
 const { expressjwt: jwt } = require('express-jwt');
 
-// write your code here...
 app.use(cors());
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
 // 响应数据的中间件
 app.use((req, res, next) => {
     // status = 200 为成功； status = 500 为服务端失败；status = 400 为客户端失败； 默认将 status 的值设置为 500，方便处理失败的情况
@@ -81,7 +81,7 @@ app.use('/article', articleRouter);
 app.use('/task', taskRouter);
 app.use('/upload', upload); //上传图片文件等
 //错误中间件
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     // 数据验证失败
     if (err instanceof joi.ValidationError) return res.cc(err);
     //身份认证失败！
@@ -91,16 +91,4 @@ app.use((err, req, res, next) => {
     res.cc(err);
 });
 
-// 接收全局错误
-process.on('uncaughtException', (error) => {
-    console.error('uncaughtException:', error);
-});
-
-process.on('unhandledRejection', (reason) => {
-    console.error('unhandledRejection:', reason);
-});
-
-// 调用 app.listen 方法，指定端口号并启动web服务器
-app.listen(3007, function () {
-    console.log('api server running at http://127.0.0.1:3007');
-});
+module.exports = app;

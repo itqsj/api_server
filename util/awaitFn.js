@@ -1,5 +1,5 @@
 exports.awaitFn = async (asyncFn) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         asyncFn.then(
             (res) => {
                 resolve({ res, success: true });

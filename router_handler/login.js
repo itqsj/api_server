@@ -3,6 +3,7 @@ const UserModel = require('../db/user');
 const UserTeamModel = require('../db/userTeam');
 const bcryptjs = require('bcryptjs');
 
+const decrypt = require('../util/decrypt');
 const { awaitFn } = require('../util/awaitFn');
 
 exports.login = async (req, res) => {
@@ -23,8 +24,8 @@ exports.login = async (req, res) => {
 
     // var geo = geoip.lookup(ip);
     // console.log(ip, geo);
-
-    const { email, password } = req.body;
+    const { cryptData } = req.body;
+    const { email, password } = decrypt(cryptData);
 
     const result = await UserModel.findOne({ email }).select('+password');
 

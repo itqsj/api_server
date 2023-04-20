@@ -40,6 +40,7 @@ const token = joi.string().required();
 const user_pic = joi.string().required();
 const background = joi.string().required();
 const introduction = joi.string().required();
+const cryptData = joi.string().required();
 
 exports.reg_getuserlist_schema = {
     body: {
@@ -51,8 +52,7 @@ exports.reg_getuserlist_schema = {
 // 注册和登录表单的验证规则对象
 exports.reg_login_schema = {
     body: {
-        email,
-        password,
+        cryptData,
     },
 };
 

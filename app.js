@@ -13,6 +13,7 @@ const taskRouter = require('./router/task');
 const upload = require('./router/upload');
 const joi = require('joi');
 const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
 // 导入配置文件
 const config = require('./config/config');
 
@@ -26,6 +27,7 @@ const { expressjwt: jwt } = require('express-jwt');
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(bodyParser.json());
 // 响应数据的中间件
 app.use((req, res, next) => {
     // status = 200 为成功； status = 500 为服务端失败；status = 400 为客户端失败； 默认将 status 的值设置为 500，方便处理失败的情况

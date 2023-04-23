@@ -36,8 +36,11 @@ exports.uploadHandler = (req, res) => {
             }
 
             if (respInfo.statusCode === 200) {
-                res.json({
-                    url: `http://rtgza51w8.hn-bkt.clouddn.com/${key}?e=${Date.now()}`,
+                res.send({
+                    code: 200,
+                    data: {
+                        url: `http://rtgza51w8.hn-bkt.clouddn.com/${key}?e=${Date.now()}`,
+                    },
                 });
             } else {
                 res.status(respInfo.statusCode).json(respBody);

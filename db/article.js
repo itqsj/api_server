@@ -51,4 +51,8 @@ const ArticleSchema = new Schema({
 });
 
 const ArticleModel = mongoose.model('article', ArticleSchema);
+// ArticleModel.createIndexes([
+//     { name: 'pub_time_desc', key: { pub_time: -1 } },
+//     { name: 'cate_id_asc', key: { cate_id: 1 } },
+// ]);
 module.exports = ArticleModel;

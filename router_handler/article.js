@@ -14,7 +14,7 @@ exports.getArticleList = async (req, res) => {
         cateIds,
     } = req.query;
     const filter = {};
-    const indexes = {};
+    // const indexes = {};
     if (timeRang && timeRang.length) {
         const rang = {};
         if (timeRang[0] !== '0') {
@@ -27,13 +27,13 @@ exports.getArticleList = async (req, res) => {
             if (timeRang[0] > timeRang[1] && timeRang[1] !== '0') {
                 return res.cc('结束时间不能小于开始时间');
             }
-            indexes.pub_time = -1;
+            // indexes.pub_time = -1;
             filter.pub_time = rang;
         }
     }
     if (author_id) {
         filter.author_id = author_id;
-        indexes.author_id = author_id;
+        // indexes.author_id = author_id;
     }
     if (not_id) {
         filter._id = { $ne: not_id };
@@ -42,15 +42,17 @@ exports.getArticleList = async (req, res) => {
         filter.$or = [];
         filter.$or.push({ title: { $regex: keyWord, $options: 'i' } });
         filter.$or.push({ introduce: { $regex: keyWord, $options: 'i' } });
-        indexes.title = keyWord;
-        indexes.introduce = keyWord;
+        // indexes.title = keyWord;
+        // indexes.introduce = keyWord;
     }
     if (cateIds && cateIds.length) {
         filter.cate_id = { $in: cateIds };
-        indexes.cate_id = 1;
+        // indexes.cate_id = 1;
     }
 
-    ArticleModel.createIndexes(indexes);
+    // ArticleModel.createIndexes(indexes);
+    const aaa = await ArticleModel.listIndexes();
+    console.log(aaa);
 
     const features = new APIFeatures(
         ArticleModel.find(filter, {

@@ -4,22 +4,60 @@ const APIFeatures = require('../util/APIFeatures');
 const { awaitFn } = require('../util/awaitFn');
 
 exports.getArticleList = async (req, res) => {
-    const { page = 1, pageSize = 10, author_id, not_id } = req.query;
+    const {
+        page = 1,
+        pageSize = 10,
+        author_id,
+        not_id,
+        keyWord,
+        timeRang,
+        cateIds,
+    } = req.query;
     const filter = {};
+    const indexes = {};
+    if (timeRang && timeRang.length) {
+        const rang = {};
+        if (timeRang[0] !== '0') {
+            rang.$gte = timeRang[0] - 0;
+        }
+        if (timeRang[1] !== '0') {
+            rang.$lte = timeRang[1] - 0;
+        }
+        if (timeRang[0] !== '0' || timeRang[1] !== '0') {
+            if (timeRang[0] > timeRang[1] && timeRang[1] !== '0') {
+                return res.cc('结束时间不能小于开始时间');
+            }
+            indexes.pub_time = -1;
+            filter.pub_time = rang;
+        }
+    }
     if (author_id) {
         filter.author_id = author_id;
+        indexes.author_id = author_id;
     }
     if (not_id) {
         filter._id = { $ne: not_id };
     }
+    if (keyWord) {
+        filter.$or = [];
+        filter.$or.push({ title: { $regex: keyWord, $options: 'i' } });
+        filter.$or.push({ introduce: { $regex: keyWord, $options: 'i' } });
+        indexes.title = keyWord;
+        indexes.introduce = keyWord;
+    }
+    if (cateIds && cateIds.length) {
+        filter.cate_id = { $in: cateIds };
+        indexes.cate_id = 1;
+    }
+
+    ArticleModel.createIndexes(indexes);
+
     const features = new APIFeatures(
         ArticleModel.find(filter, {
             content: 0,
-        }),
+        }).sort({ pub_time: -1 }),
         req.query,
-    )
-        .paginate()
-        .sort();
+    ).paginate();
 
     const articleList = await features.query;
     const count = await ArticleModel.count(filter);

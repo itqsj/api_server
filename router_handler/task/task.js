@@ -5,7 +5,7 @@ const { awaitFn } = require('../../util/awaitFn');
 const { move, remove, add } = require('./moveFn');
 
 exports.taskAdd = async (req, res) => {
-    const { name, img, content, priority, needTime } = req.body;
+    const { name, imgs, content, priority, needTime } = req.body;
     const { _id, team_id } = req.auth;
     const result = await TaskModel.find({ team_id, name });
     if (result.length) {
@@ -22,7 +22,7 @@ exports.taskAdd = async (req, res) => {
         name,
         panel_id: TaskPanel._id,
         team_id,
-        img,
+        imgs,
         content,
         priority,
         needTime,
@@ -100,13 +100,13 @@ exports.taskDetail = async (req, res) => {
 // task详情
 exports.taskEdit = async (req, res) => {
     const { team_id } = req.auth;
-    let { _id, name, img, content, priority, needTime } = req.body;
+    let { _id, name, imgs, content, priority, needTime } = req.body;
     const task = await TaskModel.findOne({ _id, team_id });
     task.name = name;
     task.content = content;
     task.priority = priority;
     task.needTime = needTime;
-    task.img = img;
+    task.imgs = imgs;
     await task.save();
     res.send({
         code: 200,
@@ -200,7 +200,7 @@ exports.taskMove = async (req, res) => {
         )[0];
 
         //1 待执行 2.进行中 3已完成 4需复习
-        if (addPanel.type === 3) {
+        if (addPanel.type === 3 || addPanel.type === 4) {
             tarTask.updateMany.update.completeTime = Date.now();
         } else if (addPanel.type === 2) {
             oldTask.usageTime.push([Date.now()]);

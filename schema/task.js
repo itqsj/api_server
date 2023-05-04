@@ -28,7 +28,7 @@ const joi = require('joi');
 // task
 const name = joi.string().required();
 const _id = joi.string().required(); //上一层id
-const img = joi.string().allow('');
+const imgs = joi.string().allow('');
 // const schedule = joi.number().min(0).max(1).required(); //任务进度（百分比）
 const needTime = joi.number().allow('');
 const content = joi.string().allow('');
@@ -43,7 +43,7 @@ const type = joi.number().valid(1, 2, 3, 4).required();
 exports.reg_taskadd_schema = {
     body: {
         name,
-        img,
+        imgs,
         needTime,
         priority,
         content,
@@ -53,7 +53,7 @@ exports.reg_taskadd_schema = {
 exports.reg_taskedit_schema = {
     _id,
     name,
-    img,
+    imgs,
     needTime,
     priority,
     content,

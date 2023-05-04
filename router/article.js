@@ -19,7 +19,7 @@ const {
     articleDel,
 } = require('../router_handler/article');
 
-router.get('/list', expressJoi(reg_articlelist_schema), getArticleList);
+router.get('/list', getArticleList);
 router.get('/detail', getArticleDetail);
 router.post('/add', expressJoi(reg_articleadd_schema), addArticle);
 router.post('/edit', expressJoi(reg_articleedit_schema), articleEdit);

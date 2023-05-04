@@ -52,7 +52,7 @@ const TaskSchema = new Schema({
         type: String,
         required: [true, 'name不能为空'],
     },
-    img: {
+    imgs: {
         type: String,
         required: false,
     },

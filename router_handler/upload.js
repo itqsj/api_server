@@ -40,6 +40,7 @@ exports.uploadHandler = (req, res) => {
                     code: 200,
                     data: {
                         url: `http://rtgza51w8.hn-bkt.clouddn.com/${key}?e=${Date.now()}`,
+                        src: `/${key}?e=${Date.now()}`,
                     },
                 });
             } else {

@@ -36,29 +36,29 @@ app.use((req, res, next) => {
             // 状态
             code,
             // 状态描述，判断 err 是 错误对象 还是 字符串
-            msg: err instanceof Error ? err.message : err,
+            message: err instanceof Error ? err.message : err,
         });
     };
-    res.selectErr = (err, result, msg = '查询失败！') => {
+    res.selectErr = (err, result, message = '查询失败！') => {
         if (err) {
             res.cc(err, 500);
             return false;
         }
         if (result.length !== 1) {
-            res.cc(msg, 400);
+            res.cc(message, 400);
             return false;
         }
 
         return true;
     };
 
-    res.updateErr = (err, result, msg = '更新失败！') => {
+    res.updateErr = (err, result, message = '更新失败！') => {
         if (err) {
             res.cc(err, 500);
             return false;
         }
         if (result.affectedRows !== 1) {
-            res.cc(msg, 400);
+            res.cc(message, 400);
             return false;
         }
 
@@ -73,6 +73,60 @@ app.use(
         algorithms: ['HS256'],
     }).unless({ path: [/^\/lg\//, /^\/public\//] }),
 );
+
+app.use((req, res, next) => {
+    console.log(req.method, req.url);
+    if (req.url.includes('/lg')) {
+        return next();
+    }
+
+    const authMap = {
+        // user
+        '/user/list': false,
+        '/user/info': false,
+        '/user/verifyToken': false,
+        '/user/resetpwd': false,
+        '/user/updateInfo': false,
+        // team
+        '/team/add': true,
+        '/team/list': false,
+        '/team/remove': true,
+        // cate
+        '/cate/list': false,
+        '/cate/add': true,
+        '/cate/del': true,
+        // article
+        '/article/list': false,
+        '/article/detail': false,
+        '/article/add': true,
+        '/article/edit': true,
+        '/article/del': true,
+        // task
+        '/task/panel_list': false,
+        '/task/panel_add': true,
+        '/task/panel_move': true,
+        '/task/panel_del': true,
+        '/task/detail': false,
+        '/task/add': true,
+        '/task/edit': true,
+        '/task/list': false,
+        '/task/del': true,
+        '/task/move': true,
+        // upload
+        '/upload/file': true,
+    };
+    console.log(authMap[req.url]);
+    if (!authMap[req.url]) {
+        next();
+    } else {
+        const { isAdmin } = req.auth;
+        if (isAdmin) {
+            next();
+        } else {
+            return res.cc('当前账号没有权限，请联系管理员。');
+        }
+    }
+});
 
 app.use('/public', express.static('./uploads')); //可以通过服务器地址+pubilc+加文件夹访问静态文件
 app.use('/lg', loginRouter);

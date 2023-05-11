@@ -95,7 +95,7 @@ exports.cateDel = (req, res) => {
 
         res.send({
             code: 200,
-            msg: '删除成功',
+            message: '删除成功',
         });
     });
 };

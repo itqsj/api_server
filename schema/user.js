@@ -27,7 +27,7 @@ const joi = require('joi');
 const _id = joi.string().required();
 const page = joi.number();
 const pageSize = joi.number();
-const username = joi.string().alphanum().min(4).max(12).required();
+const username = joi.string().min(4).max(12).required();
 const password = joi
     .string()
     .pattern(/^[\S]{6,12}$/)
@@ -41,11 +41,13 @@ const user_pic = joi.string().required();
 const background = joi.string().required();
 const introduction = joi.string().required();
 const cryptData = joi.string().required();
+const ids = joi.array();
 
 exports.reg_getuserlist_schema = {
     body: {
         page,
         pageSize,
+        ids,
     },
 };
 

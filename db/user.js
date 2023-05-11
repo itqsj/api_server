@@ -43,13 +43,18 @@ const UserSchema = new Schema({
         type: String,
         default: Date.now(),
     },
+    isAdmin: {
+        type: Number,
+        required: false,
+        default: 0,
+        enum: [0, 1], //1 是管理员, 0不是管理员
+    },
 });
 
 UserSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
 
     this.password = await bcrypt.hash(this.password, 12);
-
     this.passwordConfirm = undefined;
     next();
 });
@@ -66,10 +71,11 @@ UserSchema.methods.generateToken = function (team_id) {
         _id: this._id,
         username: this.username,
         email: this.email,
+        isAdmin: this.isAdmin,
         team_id,
     };
     const token = jwt.sign(obj, config.jwtSecretKey, {
-        expiresIn: '10h',
+        expiresIn: '1h',
     });
 
     return token;

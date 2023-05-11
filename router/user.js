@@ -10,6 +10,7 @@ const {
     updateAvatar,
     updateBg,
     getUserList,
+    updateInfo,
 } = require('../router_handler/user');
 // 校验
 const {
@@ -33,5 +34,7 @@ router.post('/resetpwd', expressJoi(update_password_schema), resetpwd);
 router.post('/upAvatar', expressJoi(reg_avatar_schema), updateAvatar);
 //修改背景
 router.post('/bg', expressJoi(reg_bg_schema), updateBg);
+//修改信息
+router.post('/updateInfo', updateInfo);
 
 module.exports = router;

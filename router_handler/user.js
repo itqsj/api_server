@@ -10,8 +10,12 @@ const UserModel = require('../db/user');
 const UserTeamModel = require('../db/userTeam');
 
 exports.getUserList = async (req, res) => {
-    const { page = 1, pageSize = 10 } = req.query;
-    const features = new APIFeatures(UserModel.find(), req.query)
+    const { page = 1, pageSize = 10, ids = [] } = req.query;
+    const filter = {};
+    if (ids.length) {
+        filter._id = { $in: ids };
+    }
+    const features = new APIFeatures(UserModel.find(filter), req.query)
         .paginate()
         .sort();
     const users = await features.query;
@@ -87,8 +91,45 @@ exports.resetpwd = async (req, res) => {
 
     res.send({
         code: 200,
-        msg: '操作成功！',
+        message: '操作成功！',
     });
+};
+
+//更新信息
+exports.updateInfo = async (req, res) => {
+    const { username, email, user_pic, background, introduction } = req.body;
+    const { _id } = req.auth;
+
+    const tarUser = await UserModel.findById(_id);
+    if (!tarUser) return res.cc(`没有id为${_id}的用户！`);
+
+    if (username) {
+        tarUser.username = username;
+    }
+    // if (email) {
+    //     tarUser.email = email;
+    // }
+    if (user_pic) {
+        tarUser.user_pic = user_pic;
+    }
+    if (background) {
+        tarUser.background = background;
+    }
+    if (introduction) {
+        tarUser.introduction = introduction;
+    }
+
+    tarUser
+        .save()
+        .then(() => {
+            res.send({
+                code: 200,
+                message: '更新成功！',
+            });
+        })
+        .catch((err) => {
+            res.cc(err, 500);
+        });
 };
 
 //更新头像
@@ -103,7 +144,7 @@ exports.updateAvatar = async (req, res) => {
         .then(() => {
             res.send({
                 code: 200,
-                msg: '更新成功！',
+                message: '更新成功！',
             });
         })
         .catch((err) => {
@@ -123,7 +164,7 @@ exports.updateBg = async (req, res) => {
         .then(() => {
             res.send({
                 code: 200,
-                msg: '更新成功！',
+                message: '更新成功！',
             });
         })
         .catch((err) => {

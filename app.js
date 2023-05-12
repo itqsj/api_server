@@ -24,7 +24,15 @@ app.use(express.static(__dirname + '/public', { index: 'index.html' }));
 //解析token的中间件
 const { expressjwt: jwt } = require('express-jwt');
 
-app.use(cors());
+app.use(
+    cors({
+        origin: [
+            'http://localhost:8080',
+            'https://web-blog-c22vs2cbn-itqsj.vercel.app',
+        ],
+        credentials: true,
+    }),
+);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(bodyParser.json());

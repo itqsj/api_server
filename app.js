@@ -14,8 +14,6 @@ const upload = require('./router/upload');
 const joi = require('joi');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-// 导入配置文件
-const config = require('./config/config');
 
 dotenv.config({
     path: './.env',
@@ -69,13 +67,12 @@ app.use((req, res, next) => {
 
 app.use(
     jwt({
-        secret: config.jwtSecretKey,
+        secret: process.env.JWTSECRETKEY,
         algorithms: ['HS256'],
     }).unless({ path: [/^\/lg\//, /^\/public\//] }),
 );
 
 app.use((req, res, next) => {
-    console.log(req.method, req.url);
     if (req.url.includes('/lg')) {
         return next();
     }
@@ -115,7 +112,6 @@ app.use((req, res, next) => {
         // upload
         '/upload/file': true,
     };
-    console.log(authMap[req.url]);
     if (!authMap[req.url]) {
         next();
     } else {

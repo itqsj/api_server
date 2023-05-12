@@ -3,9 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
 
-// 导入配置文件
-const config = require('../config/config');
-
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
@@ -74,7 +71,7 @@ UserSchema.methods.generateToken = function (team_id) {
         isAdmin: this.isAdmin,
         team_id,
     };
-    const token = jwt.sign(obj, config.jwtSecretKey, {
+    const token = jwt.sign(obj, process.env.JWTSECRETKEY, {
         expiresIn: '1h',
     });
 

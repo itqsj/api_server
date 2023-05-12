@@ -2,8 +2,6 @@
 const jwt = require('jsonwebtoken');
 // 即可使用 bcrypt.compareSync(提交的密码，数据库中的密码) 方法验证密码是否正确
 // compareSync() 函数的返回值为布尔值，true 表示密码正确，false 表示密码错误
-// 导入配置文件
-const config = require('../config/config');
 
 const APIFeatures = require('../util/APIFeatures');
 const UserModel = require('../db/user');
@@ -52,12 +50,12 @@ exports.getUserInfo = async (req, res) => {
 exports.verifyToken = (req, res) => {
     const token = req.body.token.split('Bearer ')[1];
 
-    jwt.verify(token, config.jwtSecretKey, function (err, decoded) {
+    jwt.verify(token, process.env.JWTSECRETKEY, function (err, decoded) {
         if (err) {
             res.cc('当前网络繁忙，请稍候重试 token 失效 4004', 4004);
         } else {
             // 生成 Token 字符串
-            const tokenStr = jwt.sign(decoded, config.jwtSecretKey);
+            const tokenStr = jwt.sign(decoded, process.env.JWTSECRETKEY);
             res.send({
                 code: 200,
                 data: {

@@ -28,7 +28,7 @@ app.use(
     cors({
         origin: [
             'http://localhost:8080',
-            'https://web-blog-c22vs2cbn-itqsj.vercel.app',
+            'https://web-blog-qa0xchifp-itqsj.vercel.app',
         ],
         credentials: true,
     }),

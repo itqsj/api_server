@@ -19,6 +19,8 @@ dotenv.config({
     path: './.env',
 });
 
+// eslint-disable-next-line no-undef
+app.use(express.static(__dirname + '/public', { index: 'index.html' }));
 //解析token的中间件
 const { expressjwt: jwt } = require('express-jwt');
 

@@ -28,7 +28,7 @@ app.use(
     cors({
         origin: [
             'http://10.10.30.124',
-            'https://web-blog-qa0xchifp-itqsj.vercel.app',
+            'https://web-blog-j041zmw7e-itqsj.vercel.app/',
         ],
         credentials: true,
     }),

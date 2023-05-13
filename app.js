@@ -27,7 +27,7 @@ const { expressjwt: jwt } = require('express-jwt');
 app.use(
     cors({
         origin: [
-            'http://localhost:8080',
+            'http://10.10.30.124',
             'https://web-blog-qa0xchifp-itqsj.vercel.app',
         ],
         credentials: true,

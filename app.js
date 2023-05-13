@@ -15,6 +15,9 @@ const joi = require('joi');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 
+// eslint-disable-next-line no-undef
+app.use(express.static(__dirname + '/public', { index: 'index.html' }));
+
 dotenv.config({
     path: './.env',
 });

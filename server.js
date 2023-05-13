@@ -1,8 +1,6 @@
 const app = require('./app.js');
 const mongoose = require('mongoose');
 const connectUrl = require('./db/index.js');
-// 导入 express 模块
-const express = require('express');
 
 const newConnectUrl = connectUrl.replace(
     'DB_PASSWORD',
@@ -14,9 +12,6 @@ mongoose
     .catch((err) => {
         console.log(err, '连接失败');
     });
-
-// eslint-disable-next-line no-undef
-app.use(express.static(__dirname + '/public', { index: 'index.html' }));
 
 // 接收全局错误
 process.on('uncaughtException', (error) => {

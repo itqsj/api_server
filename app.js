@@ -30,6 +30,7 @@ app.use(
         origin: [
             'http://10.10.30.124',
             'https://web-blog-7xuib6z3o-itqsj.vercel.app',
+            'https://web-blog-zeta.vercel.app',
         ],
         credentials: true,
     }),

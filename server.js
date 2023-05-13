@@ -1,6 +1,8 @@
 const app = require('./app.js');
 const mongoose = require('mongoose');
 const connectUrl = require('./db/index.js');
+// 导入 express 模块
+const express = require('express');
 
 const newConnectUrl = connectUrl.replace(
     'DB_PASSWORD',

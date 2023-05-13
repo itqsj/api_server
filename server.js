@@ -13,6 +13,9 @@ mongoose
         console.log(err, '连接失败');
     });
 
+// eslint-disable-next-line no-undef
+app.use(express.static(__dirname + '/public', { index: 'index.html' }));
+
 // 接收全局错误
 process.on('uncaughtException', (error) => {
     console.error('uncaughtException:', error);

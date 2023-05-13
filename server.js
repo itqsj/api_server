@@ -11,7 +11,6 @@ mongoose
     .then(() => console.log('连接成功'))
     .catch((err) => {
         console.log(err, '连接失败');
-        mongoose.connect(newConnectUrl);
     });
 
 // 接收全局错误

@@ -25,16 +25,7 @@ app.use(express.static(__dirname + '/public', { index: 'index.html' }));
 //解析token的中间件
 const { expressjwt: jwt } = require('express-jwt');
 
-app.use(
-    cors({
-        origin: [
-            'http://10.10.30.124',
-            'https://web-blog-7xuib6z3o-itqsj.vercel.app',
-            'https://web-blog-zeta.vercel.app',
-        ],
-        credentials: true,
-    }),
-);
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(bodyParser.json());

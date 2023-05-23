@@ -10,10 +10,11 @@ const teamRouter = require('./router/userTeam');
 const cateRouter = require('./router/cate');
 const articleRouter = require('./router/article');
 const taskRouter = require('./router/task');
-const upload = require('./router/upload');
+// const upload = require('./router/upload');
 const joi = require('joi');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
+let { createProxyMiddleware } = require('http-proxy-middleware');
 
 dotenv.config({
     path: './.env',
@@ -25,7 +26,12 @@ app.use(express.static(__dirname + '/public', { index: 'index.html' }));
 //解析token的中间件
 const { expressjwt: jwt } = require('express-jwt');
 
-app.use(cors());
+app.use(
+    cors({
+        origin: 'https://web-blog-sandy.vercel.app',
+        optionsSuccessStatus: 200,
+    }),
+);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(bodyParser.json());
@@ -113,7 +119,7 @@ app.use((req, res, next) => {
         '/task/del': true,
         '/task/move': true,
         // upload
-        '/upload/file': true,
+        '/upload': true,
     };
     if (!authMap[req.url]) {
         next();
@@ -134,7 +140,21 @@ app.use('/team', teamRouter);
 app.use('/cate', cateRouter);
 app.use('/article', articleRouter);
 app.use('/task', taskRouter);
-app.use('/upload', upload); //上传图片文件等
+app.use(
+    '/upload',
+    createProxyMiddleware({
+        target: 'https://smms.app/api/v2',
+        changeOrigin: true,
+        headers: {
+            Authorization: process.env.SMMSAUTHENTICATION,
+        },
+        // ws: true,
+        secure: true,
+        pathRewrite: {
+            '/upload': '/upload',
+        },
+    }),
+); //上传图片文件等
 //错误中间件
 app.use((err, req, res) => {
     // 数据验证失败

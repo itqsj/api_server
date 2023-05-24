@@ -121,15 +121,17 @@ app.use((req, res, next) => {
         // upload
         '/upload': true,
     };
-    if (!authMap[req.url]) {
+    const { isAdmin } = req.auth;
+    if (isAdmin || !authMap[req.url]) {
         next();
     } else {
-        const { isAdmin } = req.auth;
-        if (isAdmin) {
-            next();
-        } else {
-            return res.cc('当前账号没有权限，请联系管理员。');
-        }
+        res.send({
+            // 状态
+            code: 400,
+            // 状态描述，判断 err 是 错误对象 还是 字符串
+            message: '当前账号没有权限，请联系管理员。',
+        });
+        return;
     }
 });
 

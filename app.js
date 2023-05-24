@@ -28,7 +28,7 @@ const { expressjwt: jwt } = require('express-jwt');
 
 app.use(
     cors({
-        origin: 'https://web-blog-sandy.vercel.app',
+        origin: 'https://web-blog-ebon.vercel.app',
         optionsSuccessStatus: 200,
     }),
 );
